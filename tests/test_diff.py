@@ -99,3 +99,55 @@ class TestComplexScenarios:
         b = {"users": [{"name": "Bob"}]}
         result = diff(a, b)
         assert result == ["~ users[0].name: 'Ana' -> 'Bob'"]
+
+
+class TestSmartListMatching:
+    def test_match_by_id_reordered(self):
+        a = {"users": [{"id": 1, "name": "Ana"}, {"id": 2, "name": "Bob"}]}
+        b = {"users": [{"id": 2, "name": "Bob"}, {"id": 1, "name": "Ana Maria"}]}
+        result = diff(a, b, list_key="id")
+        assert result == ["~ users[id=1].name: 'Ana' -> 'Ana Maria'"]
+
+    def test_match_by_id_addition(self):
+        a = {"users": [{"id": 1, "name": "Ana"}]}
+        b = {"users": [{"id": 1, "name": "Ana"}, {"id": 2, "name": "Bob"}]}
+        result = diff(a, b, list_key="id")
+        assert "+ users[id=2]:" in result[0]
+
+    def test_match_by_id_removal(self):
+        a = {"users": [{"id": 1, "name": "Ana"}, {"id": 2, "name": "Bob"}]}
+        b = {"users": [{"id": 1, "name": "Ana"}]}
+        result = diff(a, b, list_key="id")
+        assert "- users[id=2]:" in result[0]
+
+    def test_match_by_id_no_changes(self):
+        a = {"users": [{"id": 1, "name": "Ana"}, {"id": 2, "name": "Bob"}]}
+        b = {"users": [{"id": 2, "name": "Bob"}, {"id": 1, "name": "Ana"}]}
+        result = diff(a, b, list_key="id")
+        assert result == []
+
+    def test_fallback_to_index_when_key_missing(self):
+        a = {"items": [{"name": "A"}, {"name": "B"}]}
+        b = {"items": [{"name": "B"}, {"name": "C"}]}
+        result = diff(a, b, list_key="id")  # items don't have "id"
+        assert "items[0]" in result[0]  # falls back to index
+
+    def test_multiple_key_fallback(self):
+        a = {"users": [{"name": "Ana", "age": 30}]}
+        b = {"users": [{"name": "Ana", "age": 31}]}
+        result = diff(a, b, list_key=["id", "name"])  # tries id, then name
+        assert "users[name='Ana'].age" in result[0]
+
+    def test_nested_list_with_key(self):
+        a = {"data": {"users": [{"id": 1, "status": "active"}]}}
+        b = {"data": {"users": [{"id": 1, "status": "inactive"}]}}
+        result = diff(a, b, list_key="id")
+        assert result == ["~ data.users[id=1].status: 'active' -> 'inactive'"]
+
+    def test_without_list_key_uses_index(self):
+        a = {"users": [{"id": 1, "name": "Ana"}, {"id": 2, "name": "Bob"}]}
+        b = {"users": [{"id": 2, "name": "Bob"}, {"id": 1, "name": "Ana"}]}
+        result = diff(a, b)  # no list_key
+        # Should show changes by index
+        assert len(result) > 0
+        assert "users[0]" in result[0]
