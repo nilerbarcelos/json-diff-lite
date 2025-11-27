@@ -66,9 +66,26 @@ Output:
 - Lists (index-based comparison)
 - Primitives: `str`, `int`, `float`, `bool`, `None`
 
+## CLI
+
+Compare JSON files directly from the command line:
+
+```bash
+json-diff-lite file1.json file2.json
+```
+
+Options:
+- `-q, --quiet` — Exit with code 1 if differences found, no output
+- `-v, --version` — Show version
+
+Exit codes:
+- `0` — No differences (or version shown)
+- `1` — Differences found
+- `2` — Error (file not found, invalid JSON)
+
 ## Limitations
 
-Current version (v0.1.0) does **not** support:
+Current version (v0.2.0) does **not** support:
 
 - Smart list matching (by similarity or ID)
 - Custom objects
@@ -93,15 +110,14 @@ hatch run test:run
 
 ## Roadmap
 
-### v0.1.0 — MVP (current)
+### v0.1.0 — MVP
 - Basic diff for dict/list/primitives
 - Human-readable output
 - Tests
 
-### v0.2.0 — CLI
-```bash
-json-diff-lite file1.json file2.json
-```
+### v0.2.0 — CLI (current)
+- Command-line interface
+- Quiet mode for CI
 
 ### v0.3.0 — Colored output
 - ANSI colors (optional)

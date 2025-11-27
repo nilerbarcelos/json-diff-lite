@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "json-diff-lite"
-version = "0.1.0"
+version = "0.2.0"
 description = "A minimal, zero-dependency library for comparing JSON objects with human-readable output"
 readme = "README.md"
 license = "MIT"
@@ -23,6 +23,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+
+[project.scripts]
+json-diff-lite = "json_diff_lite.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/nilerbarcelos/json-diff-lite"
