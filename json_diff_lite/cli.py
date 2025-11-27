@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 
+from .colors import format_change
 from .core import diff
 
 
@@ -25,6 +26,11 @@ def main():
         "-q", "--quiet",
         action="store_true",
         help="Exit with code 1 if differences found, without output",
+    )
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="Disable colored output",
     )
 
     args = parser.parse_args()
@@ -58,8 +64,9 @@ def main():
         print("No differences found.")
         return 0
 
+    use_color = not args.no_color
     for change in changes:
-        print(change)
+        print(format_change(change, use_color=use_color))
 
     return 1
 

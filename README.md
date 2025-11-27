@@ -76,7 +76,13 @@ json-diff-lite file1.json file2.json
 
 Options:
 - `-q, --quiet` — Exit with code 1 if differences found, no output
+- `--no-color` — Disable colored output
 - `-v, --version` — Show version
+
+Colors are automatically enabled when outputting to a terminal:
+- Green for additions (`+`)
+- Red for removals (`-`)
+- Yellow for modifications (`~`)
 
 Exit codes:
 - `0` — No differences (or version shown)
@@ -85,11 +91,10 @@ Exit codes:
 
 ## Limitations
 
-Current version (v0.2.0) does **not** support:
+Current version (v0.3.0) does **not** support:
 
 - Smart list matching (by similarity or ID)
 - Custom objects
-- Colored output
 - Unordered comparison tolerance
 
 These features are planned for future releases.
@@ -115,12 +120,13 @@ hatch run test:run
 - Human-readable output
 - Tests
 
-### v0.2.0 — CLI (current)
+### v0.2.0 — CLI
 - Command-line interface
 - Quiet mode for CI
 
-### v0.3.0 — Colored output
-- ANSI colors (optional)
+### v0.3.0 — Colored output (current)
+- ANSI colors (auto-detected)
+- `--no-color` flag
 
 ### v0.4.0 — Smart list diffing
 - Match list items by similarity
