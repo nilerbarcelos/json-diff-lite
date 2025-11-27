@@ -60,10 +60,38 @@ Output:
 - `- `key: value — Removed
 - `~` key: old -> new — Modified
 
+### Smart list matching
+
+By default, lists are compared by index. Use `list_key` to match items by a field:
+
+```python
+old = {"users": [{"id": 1, "name": "Ana"}, {"id": 2, "name": "Bob"}]}
+new = {"users": [{"id": 2, "name": "Bob"}, {"id": 1, "name": "Ana Maria"}]}
+
+# Without list_key (compares by index - shows many false changes)
+diff(old, new)
+
+# With list_key (matches by id field)
+changes = diff(old, new, list_key="id")
+for change in changes:
+    print(change)
+```
+
+Output:
+```
+~ users[id=1].name: 'Ana' -> 'Ana Maria'
+```
+
+You can also provide multiple keys as fallback:
+
+```python
+diff(old, new, list_key=["id", "name", "key"])
+```
+
 ### Supported types
 
 - Dicts (recursive)
-- Lists (index-based comparison)
+- Lists (index-based or key-based comparison)
 - Primitives: `str`, `int`, `float`, `bool`, `None`
 
 ## CLI
@@ -91,13 +119,12 @@ Exit codes:
 
 ## Limitations
 
-Current version (v0.3.0) does **not** support:
+Current version (v0.4.0) does **not** support:
 
-- Smart list matching (by similarity or ID)
 - Custom objects
 - Unordered comparison tolerance
 
-These features are planned for future releases.
+These features may be added in future releases.
 
 ## Development
 
@@ -124,12 +151,13 @@ hatch run test:run
 - Command-line interface
 - Quiet mode for CI
 
-### v0.3.0 — Colored output (current)
+### v0.3.0 — Colored output
 - ANSI colors (auto-detected)
 - `--no-color` flag
 
-### v0.4.0 — Smart list diffing
-- Match list items by similarity
+### v0.4.0 — Smart list diffing (current)
+- Match list items by key field (`list_key` parameter)
+- Support for multiple fallback keys
 
 ## License
 

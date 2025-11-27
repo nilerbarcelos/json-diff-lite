@@ -3,5 +3,5 @@
 from .core import diff
 from .colors import format_change
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __all__ = ["diff", "format_change"]
